@@ -21,7 +21,7 @@ import android.text.format.Time;
 import android.telephony.Rlog;
 import android.content.res.Resources;
 import android.text.TextUtils;
-
+import android.os.SystemProperties;
 
 import com.android.internal.telephony.EncodeException;
 import com.android.internal.telephony.GsmAlphabet;
@@ -1268,19 +1268,15 @@ public class SmsMessage extends SmsMessageBase {
                     }
 
                 case 3: // reserved
-                         if (SystemProperties.get(TelephonyProperties.PROPERTY_ICC_OPERATOR_NUMERIC, "").
-                         equals("45008")) {
-                      // This value used for KSC5601 by carriers in Korea(KT).
-                       encodingType = ENCODING_KSC5601;
-                   } else {                      
-                       Rlog.w(LOG_TAG, "1 - Unsupported SMS data coding scheme "
-                              (mDataCodingScheme & 0xff));
-
-                    encodingType = ENCODING_8BIT;
-                 }
-
-
-                    
+                    // This value used for KSC5601 by carriers in Korea(KT).
+                    if (SystemProperties.get(TelephonyProperties.
+                            PROPERTY_ICC_OPERATOR_NUMERIC, "").equals("45008")) {
+                        encodingType = ENCODING_KSC5601;
+                    } else {
+                        Rlog.w(LOG_TAG, "1 - Unsupported SMS data coding scheme "
+                                + (mDataCodingScheme & 0xff));
+                        encodingType = ENCODING_8BIT;
+                    }
                     break;
                 }
             }
